@@ -2,7 +2,7 @@ import Page from '@/components/page'
 import Section from '@/components/section'
 
 const Story = () => (
-	<Page>
+	<Page padding={6} >
 		<Section>
 			<h2 className='text-xl font-semibold'>Story</h2>
 
