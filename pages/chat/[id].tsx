@@ -76,7 +76,7 @@ export default function ChatDetails() {
     }
 
     const params = useParams()
-    const userChatname = params.id
+    const userChatname = params?.id ?? 'Chat'
 
     return (
         <div className='' >
