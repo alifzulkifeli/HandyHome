@@ -10,3 +10,9 @@ body {
 	-webkit-tap-highlight-color: transparent;
 	-webkit-touch-callout: none;
 }
+
+@layer base {
+  :root {
+		--radius: 0.5rem;
+	}
+}
