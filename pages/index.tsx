@@ -70,7 +70,7 @@ const Index = () => {
                 {/* Render Cards based on the fetched services */}
                 {services.length > 0 ? (
                     services.map((service, index) => (
-                        <Card data={service}/>
+                        <Card key={index} data={service}/>
                     ))
                 ) : (
                     <p>No services found for the selected postcode.</p>
