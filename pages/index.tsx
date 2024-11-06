@@ -58,7 +58,7 @@ const Index = () => {
     }, [postcode]);
 
     return (
-        <Page>
+        <Page padding={6} >
             <Section>
                 <div className='flex w-full'>
                     <State setNegeri={setNegeri} setCity={setCity} setPostcode={setPostcode} />

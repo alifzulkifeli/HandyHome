@@ -5,9 +5,10 @@ import BottomNav from '@/components/bottom-nav'
 interface Props {
 	title?: string
 	children: React.ReactNode
+	padding: number
 }
 
-const Page = ({ title, children }: Props) => (
+const Page = ({ title, children,padding = 6 }: Props) => (
 	<>
 		{title ? (
 			<Head>
@@ -24,7 +25,7 @@ const Page = ({ title, children }: Props) => (
 			 */
 			className='mx-auto max-w-screen-md pt-20 pb-16 px-safe sm:pb-0'
 		>
-			<div className='p-6'>{children}</div>
+			<div className={'p-'+ padding}>{children}</div>
 		</main>
 
 		<BottomNav />
