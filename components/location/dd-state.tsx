@@ -19,36 +19,85 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 
-const frameworks = [
+
+const values = [
     {
-        value: "next.js",
-        label: "Next.js",
+        value: "johor",
+        label: "Johor",
     },
     {
-        value: "sveltekit",
-        label: "SvelteKit",
+        value: "sabah",
+        label: "Sabah",
     },
     {
-        value: "nuxt.js",
-        label: "Nuxt.js",
+        value: "perak",
+        label: "Perak",
     },
     {
-        value: "remix",
-        label: "Remix",
+        value: "pulau pinang",
+        label: "Pulau Pinang",
     },
     {
-        value: "astro",
-        label: "Astro",
+        value: "selangor",
+        label: "Selangor",
     },
-]
+    {
+        value: "sarawak",
+        label: "Sarawak",
+    },
+    {
+        value: "terengganu",
+        label: "Terengganu",
+    },
+    {
+        value: "kuala lumpur",
+        label: "Kuala Lumpur",
+    },
+    {
+        value: "negeri sembilan",
+        label: "Negeri Sembilan",
+    },
+    {
+        value: "melaka",
+        label: "Melaka",
+    },
+    {
+        value: "labuan",
+        label: "Labuan",
+    },
+    {
+        value: "kelantan",
+        label: "Kelantan",
+    },
+    {
+        value: "kedah",
+        label: "Kedah",
+    },
+    {
+        value: "perlis",
+        label: "Perlis",
+    },
+    {
+        value: "putrajaya",
+        label: "Putrajaya",
+    },
+    {
+        value: "pahang",
+        label: "Pahang",
+    }
+];
+        
 
 
-const DDLocation = ({name, width}) => {
+const State = () => {
     const [open, setOpen] = React.useState(false)
     const [value, setValue] = React.useState("")
+    
+    
+    
 
     return (
-        <div className={`w-${width} pb-2 ` } >
+        <div className={`w-1/3 mr-2 pb-2 ` } >
 
             <Popover open={open} onOpenChange={setOpen} >
                 <PopoverTrigger asChild>
@@ -59,8 +108,8 @@ const DDLocation = ({name, width}) => {
                         className="w-full justify-between"
                     >
                         {value
-                            ? frameworks.find((framework) => framework.value === value)?.label
-                            :  name +  "..."}
+                            ? values.find((framework) => framework.value === value)?.label
+                            :  "State..."}
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                 </PopoverTrigger>
@@ -70,7 +119,7 @@ const DDLocation = ({name, width}) => {
                         <CommandList>
                             <CommandEmpty>No framework found.</CommandEmpty>
                             <CommandGroup>
-                                {frameworks.map((framework) => (
+                                {values.map((framework) => (
                                     <CommandItem
                                         key={framework.value}
                                         value={framework.value}
@@ -97,4 +146,4 @@ const DDLocation = ({name, width}) => {
     )
 };
 
-export default DDLocation;
+export default State;
