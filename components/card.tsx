@@ -44,9 +44,15 @@ const Card = ({data}:CardPorps) => {
                     <h1 className="text-xl font-bold text-gray-700">
                         RM {data.price}
                     </h1>
-                    <button className="px-3 py-2 text-xs font-bold text-white uppercase bg-gray-800 rounded">
-                        Set Time
+                    <div className="">
+                    <button className="px-3 mr-1 py-2 text-xs font-bold text-white uppercase bg-gray-800 rounded">
+                        Chat Us
                     </button>
+
+                    <button className="px-3 py-2 text-xs font-bold text-white uppercase bg-gray-800 rounded">
+                        Book Now
+                    </button>
+                    </div>
                 </div>
             </div>
         </div>

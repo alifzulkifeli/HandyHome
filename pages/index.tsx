@@ -6,6 +6,7 @@ import State from '@/components/location/dd-state'
 import Page from '@/components/page'
 import Section from '@/components/section'
 import { pb } from '@/lib/pb'
+import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 
 const Index = () => {
@@ -57,6 +58,7 @@ const Index = () => {
         }
     }, [postcode]);
 
+    const router = useRouter()
     return (
         <Page padding={6} >
             <Section>
@@ -70,7 +72,10 @@ const Index = () => {
                 {/* Render Cards based on the fetched services */}
                 {services.length > 0 ? (
                     services.map((service, index) => (
-                        <Card key={index} data={service}/>
+                        <div onClick={() => router.push("/service/"+ service.id)} >
+
+                        <Card key={index} data={service}  />
+                        </div>
                     ))
                 ) : (
                     <p>No services found for the selected postcode.</p>

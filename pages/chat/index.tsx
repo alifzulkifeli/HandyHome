@@ -41,37 +41,7 @@ const messages: Message[] = [
     name: 'Charlie Brown',
     avatar: '/placeholder.svg?height=40&width=40',
     lastMessage: 'Let\'s catch up soon!'
-  },  {
-    id: '3',
-    name: 'Charlie Brown',
-    avatar: '/placeholder.svg?height=40&width=40',
-    lastMessage: 'Let\'s catch up soon!'
-  },  {
-    id: '3',
-    name: 'Charlie Brown',
-    avatar: '/placeholder.svg?height=40&width=40',
-    lastMessage: 'Let\'s catch up soon!'
-  },  {
-    id: '3',
-    name: 'Charlie Brown',
-    avatar: '/placeholder.svg?height=40&width=40',
-    lastMessage: 'Let\'s catch up soon!'
-  },  {
-    id: '3',
-    name: 'Charlie Brown',
-    avatar: '/placeholder.svg?height=40&width=40',
-    lastMessage: 'Let\'s catch up soon!'
-  },  {
-    id: '3',
-    name: 'Charlie Brown',
-    avatar: '/placeholder.svg?height=40&width=40',
-    lastMessage: 'Let\'s catch up soon!'
-  },  {
-    id: '3',
-    name: 'Charlie Brown',
-    avatar: '/placeholder.svg?height=40&width=40',
-    lastMessage: 'Let\'s catch up soon!'
-  },
+  }
   // Add more messages here...
 ]
 
