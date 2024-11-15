@@ -13,54 +13,86 @@ const Index = () => {
     const [negeri, setNegeri] = useState<any>();
     const [city, setCity] = useState<any>();
     const [postcode, setPostcode] = useState<any>();
-    const [services, setServices] = useState<any[]>([]); // To store the fetched service data
+    const [services, setServices] = useState<any[]>([]);
 
-    // useEffect to fetch data whenever the postcode changes
+    const router = useRouter();
+
+    // Load saved state on initial render
+    useEffect(() => {
+        const savedPostcode = localStorage.getItem('savedPostcode');
+        const savedServices = localStorage.getItem('savedServices');
+        const savedScrollPosition = localStorage.getItem('scrollPosition');
+
+        if (savedPostcode) {
+            setPostcode(savedPostcode);
+        }
+
+        if (savedServices) {
+            setServices(JSON.parse(savedServices));
+        }
+
+        if (savedScrollPosition) {
+            window.scrollTo(0, parseInt(savedScrollPosition));
+        }
+    }, []);
+
+    // Save scroll position before the component unmounts or before navigation
+    useEffect(() => {
+        const handleRouteChange = () => {
+            localStorage.setItem('scrollPosition', window.scrollY.toString());
+        };
+        router.events.on('routeChangeStart', handleRouteChange);
+        return () => {
+            router.events.off('routeChangeStart', handleRouteChange);
+        };
+    }, [router.events]);
+
+    // Save data when the postcode or services change
+    useEffect(() => {
+        if (postcode) {
+            localStorage.setItem('savedPostcode', postcode);
+        }
+
+        if (services.length > 0) {
+            localStorage.setItem('savedServices', JSON.stringify(services));
+        }
+    }, [postcode, services]);
+
     useEffect(() => {
         if (postcode) {
             const fetchData = async () => {
                 try {
-                    // Step 1: Get provider_ids from ServiceProviders based on postcode
                     const providersList = await pb.collection('ServiceProviders').getList(1, 50, {
                         filter: `zip_code='${postcode}'`,
                     });
-                    
-                    console.log(JSON.stringify(providersList))
-                    
-					let providerIds:any[] = []
+
+                    let providerIds: any[] = [];
 
                     if (providersList.totalItems > 0) {
-						for (let index = 0; index < providersList.totalItems; index++) {
-							
-							console.log(providersList.items[index].id);
-							
-							const servicesList = await pb.collection('Services').getList(1, 50, {
-								filter: `provider_id='${providersList.items[index].id}'`,
-							});
-							providerIds = providerIds.concat(servicesList.items)
-						}
+                        for (let index = 0; index < providersList.totalItems; index++) {
+                            const servicesList = await pb.collection('Services').getList(1, 50, {
+                                filter: `provider_id='${providersList.items[index].id}'`,
+                            });
+                            providerIds = providerIds.concat(servicesList.items);
+                        }
 
-						setServices((providerIds));
-						console.log(providerIds);
-						
-						
+                        setServices(providerIds);
                     } else {
-                        setServices([]); // No providers found for the postcode
+                        setServices([]);
                     }
                 } catch (error) {
                     console.error("Error fetching services:", error);
-                    setServices([]); // Clear services on error
+                    setServices([]);
                 }
             };
             fetchData();
         } else {
-            setServices([]); // Reset services when postcode is cleared
+            setServices([]);
         }
     }, [postcode]);
 
-    const router = useRouter()
     return (
-        <Page padding={6} >
+        <Page padding={6}>
             <Section>
                 <div className='flex w-full'>
                     <State setNegeri={setNegeri} setCity={setCity} setPostcode={setPostcode} />
@@ -72,9 +104,8 @@ const Index = () => {
                 {/* Render Cards based on the fetched services */}
                 {services.length > 0 ? (
                     services.map((service, index) => (
-                        <div onClick={() => router.push("/service/"+ service.id)} >
-
-                        <Card key={index} data={service}  />
+                        <div key={index} onClick={() => router.push("/service/" + service.id)}>
+                            <Card data={service} />
                         </div>
                     ))
                 ) : (

@@ -6,9 +6,10 @@ interface Props {
 	title?: string
 	children: React.ReactNode
 	padding: number
+	nav?: boolean
 }
 
-const Page = ({ title, children,padding = 6 }: Props) => (
+const Page = ({ title, children,padding = 6 , nav = true}: Props) => (
 	<>
 		{title ? (
 			<Head>
@@ -28,7 +29,8 @@ const Page = ({ title, children,padding = 6 }: Props) => (
 			<div className={'p-'+ padding}>{children}</div>
 		</main>
 
-		<BottomNav />
+		{ nav ?  <BottomNav /> : null}
+		
 	</>
 )
 

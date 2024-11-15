@@ -16,6 +16,8 @@ import Page from '@/components/page'
 import Section from '@/components/section'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { list_city_postcodes } from '@/lib/data'
+import BottomNav from '@/components/bottom-nav'
+import BottomNavService from '@/components/bottom-nav-service'
 
 
 
@@ -34,14 +36,15 @@ interface Provider {
     collectionId: string;
     id: string;
     name: string;
-    email:string;
-    zip_code:string;
+    email: string;
+    zip_code: string;
 }
 
 
 const ServiceDetails = () => {
     const [service, setService] = useState<Service | null>(null);
     const [provider, setProvider] = useState<Provider | null>(null);
+    const [reviews, setReviews] = useState<any | null>(null);
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -61,13 +64,20 @@ const ServiceDetails = () => {
                 // Fetch the service details using the service_id
                 const serviceData: any = await pb.collection('Services').getOne(serviceId);
                 const serviceProviderData: any = await pb.collection('ServiceProviders').getOne(serviceData.provider_id);
+                const reviewsData: any = await pb.collection('ReviewRatings').getList(1, 5, {
+                    filter: `service_id='${serviceData.id}'`
+                });
 
                 console.log(serviceData);
                 console.log(serviceProviderData);
+                console.log(reviewsData);
+
 
 
                 setService(serviceData);
                 setProvider(serviceProviderData)
+                setReviews(reviewsData.items)
+
             } catch (error) {
                 console.error("Error fetching service details:", error);
                 setError('Failed to fetch service details');
@@ -83,7 +93,7 @@ const ServiceDetails = () => {
         return <div className="p-4">Loading...</div>;
     }
 
-    const findCityByZip = (zipCode: number|string): string | undefined => {
+    const findCityByZip = (zipCode: number | string): string | undefined => {
         for (const [city, postcodes] of Object.entries(list_city_postcodes)) {
             if (postcodes.includes(zipCode as number)) {
                 return city;
@@ -94,10 +104,10 @@ const ServiceDetails = () => {
 
 
     return (
-        <Page padding={1} >
+        <Page padding={0} nav={false}>
             <Section>
                 {service && provider ?
-                    <div className="p-1">
+                    <div className="p-2">
                         <Card className="">
                             <CardHeader>
                                 <CardTitle className='text-xl' >{service.service_name}</CardTitle>
@@ -116,7 +126,7 @@ const ServiceDetails = () => {
                             </CardHeader>
                         </Card>
 
-                        <Card className="mt-1">
+                        <Card className="mt-2">
                             <CardHeader>
                                 <CardDescription className='text-xl flex' >
                                     <Avatar className='h-14 w-14' >
@@ -133,16 +143,58 @@ const ServiceDetails = () => {
 
                                     </div>
                                 </CardDescription>
-                                <CardDescription className='text-lg font-semibold' >{provider.zip_code + " - " +findCityByZip(provider.zip_code)}</CardDescription>
-
-
+                                <CardDescription className='text-lg font-semibold' >{provider.zip_code + " - " + findCityByZip(provider.zip_code)}</CardDescription>
                             </CardHeader>
-
                         </Card>
+
+                        <Card className="mt-2">
+                            <CardHeader>
+                                <CardDescription className='text-xl text-bold' >
+                                    <CardDescription className='text-lg font-semibold' >{"Reviews"}</CardDescription>
+
+
+
+                                    {reviews.length ? (
+                                        reviews.map((review: any, _index: any) => (
+                                            <div className='flex py-3' key={_index}>
+                                                <Avatar className='h-10 w-10'>
+                                                    {/* <AvatarImage src={`https://pb.alifz.xyz/api/files/${provider.collectionId}/${provider.id}/${provider.avatar}`} /> */}
+                                                    <AvatarFallback>{review.user_id.substring(1, 3).toUpperCase()}</AvatarFallback>
+                                                </Avatar>
+                                                <div className='ml-2 text-sm'>
+                                                    <p className='flex items-center'>
+                                                        {/* Display star icons based on the rating */}
+                                                        {Array.from({ length: review.rating }, (_, i) => (
+                                                            <span key={i} className='text-yellow-500'>★</span> // Change class for color/style as needed
+                                                        ))}
+                                                        {/* Show empty stars for ratings less than max (e.g., 5) */}
+                                                        {Array.from({ length: 5 - review.rating }, (_, i) => (
+                                                            <span key={`empty-${i}`} className='text-gray-300'>☆</span>
+                                                        ))}
+                                                    </p>
+                                                    <span className='text-sm'>
+                                                        {review.review_text}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <CardDescription className='' >No reviews found for this service...yet</CardDescription>
+                                    )}
+
+
+
+
+                                </CardDescription>
+                            </CardHeader>
+                        </Card>
+
                     </div>
                     : null}
 
             </Section>
+            { provider ?  <BottomNavService serviceroviderID={provider!.id} /> : null}
+            
         </Page>
     );
 };
