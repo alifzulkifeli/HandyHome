@@ -11,7 +11,7 @@ const BottomNavService = ({serviceroviderID}:Props) => {
 	return (
 		<div className='sm:hidden'>
 			<nav className='fixed bottom-0 w-full border-t bg-zinc-100  dark:border-zinc-800 dark:bg-zinc-900'>
-				<div className=' flex h-14  items-center justify-around'>
+				<div className=' flex h-16  items-center justify-around'>
 					{links.map(({ href, label, icon , cname},index) => (
 						<Link
 							key={label}
