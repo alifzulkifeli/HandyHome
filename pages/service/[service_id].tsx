@@ -230,29 +230,19 @@ const ServiceDetails = () => {
 									<CardDescription className='text-lg font-semibold'>{"Availbility"}</CardDescription>
 
 									<div className='grid grid-cols-3' >
-									{availbility?.length ? (
-										[...new Set(availbility.map((avail: any) => avail.date))].map((date: any, _index: any) => (
-											<div className=' py-1 mx-1' key={_index}>
-											
-												
-
-												<div className='w-1/3' >
-
+										{availbility?.length ? (
+											[...new Set(availbility.map((avail: any) => avail.date))].map((date: any, _index: any) => (
+												<div className=' py-1 mx-1' key={_index}>
+													<div className='w-1/3' >
 														<Drawer >
-															
-																<Button >{date.substring(8, 10) + date.substring(4, 7)}</Button>
-															
-															
+															<Button >{date.substring(8, 10) + date.substring(4, 7)}</Button>
 														</Drawer>
+													</div>
 												</div>
-
-
-									
-											</div>
-										))
-									) : (
-										<CardDescription className='w-screen'>No availbility found for this service...yet</CardDescription>
-									)}
+											))
+										) : (
+											<CardDescription className='w-screen'>No availbility found for this service...yet</CardDescription>
+										)}
 									</div>
 
 								</CardDescription>
