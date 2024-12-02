@@ -13,7 +13,9 @@ const Index = () => {
     const [negeri, setNegeri] = useState<any>();
     const [city, setCity] = useState<any>();
     const [postcode, setPostcode] = useState<any>();
+    const [category, setCategory] = useState<any>();
     const [services, setServices] = useState<any[]>([]);
+    const [list_category, setListCategory] = useState<any[]>([])
 
     const router = useRouter();
 
@@ -66,9 +68,21 @@ const Index = () => {
                         filter: `zip_code='${postcode}'`,
                     });
 
+                    const resultList = await pb.collection('ServiceCategories').getList(1, 50);
+                    setListCategory(resultList.items);
+
                     let providerIds: any[] = [];
 
-                    if (providersList.totalItems > 0) {
+                    if (providersList.totalItems > 0 && category) {
+                        for (let index = 0; index < providersList.totalItems; index++) {
+                            const servicesList = await pb.collection('Services').getList(1, 50, {
+                                filter: `provider_id='${providersList.items[index].id}' && category='${category}'`,
+                            });
+                            providerIds = providerIds.concat(servicesList.items);
+                        }
+
+                        setServices(providerIds);
+                    } else if (providersList.totalItems > 0) {
                         for (let index = 0; index < providersList.totalItems; index++) {
                             const servicesList = await pb.collection('Services').getList(1, 50, {
                                 filter: `provider_id='${providersList.items[index].id}'`,
@@ -77,7 +91,9 @@ const Index = () => {
                         }
 
                         setServices(providerIds);
-                    } else {
+                    }
+                    
+                    else {
                         setServices([]);
                     }
                 } catch (error) {
@@ -89,18 +105,17 @@ const Index = () => {
         } else {
             setServices([]);
         }
-    }, [postcode]);
+    }, [postcode, category]);
 
     return (
-        <Page padding={6}>
+        <Page padding={3}>
             <Section>
                 <div className='flex w-full'>
                     <State setNegeri={setNegeri} setCity={setCity} setPostcode={setPostcode} />
                     <City negeri={negeri} setCity={setCity} setPostcode={setPostcode} city={city} />
                     <Postcode city={city} setPostcode={setPostcode} negeri={negeri} />
                 </div>
-                <Category />
-
+                <Category list_category={list_category} category={category} setCategory={setCategory} />
                 {/* Render Cards based on the fetched services */}
                 {services.length > 0 ? (
                     services.map((service, index) => (

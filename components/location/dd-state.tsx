@@ -22,7 +22,7 @@ interface StateProps {
     setNegeri: (value: string) => void; 
     setCity: (value: string) => void; 
     setPostcode: (value: string) => void; 
-}
+} 
 
 export default function State({ setNegeri, setCity, setPostcode }: StateProps) {
   const [open, setOpen] = React.useState(false)

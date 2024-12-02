@@ -7,12 +7,14 @@ const Card = ({data}:CardPorps) => {
     
     return ( 
 
-        <div className="flex max-w-md overflow-hidden bg-white rounded-lg shadow-lg mb-4 ">
-            <div className="w-1/3 bg-cover bg-landscape">
-                <img src="images/logo-dark.png" alt="" />
+        <div className="flex max-w-md overflow-hidden bg-white rounded-lg shadow-lg mb-4">
+            <div className="w-1/3 ">
+                <img className=" object-cover h-full "  src={"https://picsum.photos/200/300?random=" + data.id } alt="" />
+                {/* <img src="images/logo-dark.png" alt="" /> */}
+
             </div>
             <div className="w-2/3 p-4">
-                <h1 className="text-2xl font-bold text-gray-900">
+                <h1 className="text-xl font-bold text-gray-900">
                     {data.service_name}
                 </h1>
                 <p className="mt-2 text-sm text-gray-600">
@@ -40,7 +42,7 @@ const Card = ({data}:CardPorps) => {
                         </path>
                     </svg>
                 </div>
-                <div className="flex justify-between mt-3 item-center">
+                <div className=" justify-left mt-3 item-center">
                     <h1 className="text-xl font-bold text-gray-700">
                         RM {data.price}
                     </h1>

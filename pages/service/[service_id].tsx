@@ -62,8 +62,6 @@ const ServiceDetails = () => {
 	const [provider, setProvider] = useState<Provider | null>(null);
 	const [reviews, setReviews] = useState<any | null>(null);
 	const [availbility, setAvailbility] = useState<Availabilities[] | null>(null);
-	const [bookedDateandTime, setBookedDateandTime] = useState<string | null>(null);
-	const [drawerOpen, setDrawerOpen] = useState(false);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 
@@ -115,7 +113,7 @@ const ServiceDetails = () => {
 
 
 			} catch (error) {
-				console.error("Error fetching service details:", error);
+				console.log("Error fetching service details:", error);
 				setError('Failed to fetch service details');
 			} finally {
 				setLoading(false);
@@ -138,32 +136,11 @@ const ServiceDetails = () => {
 		return undefined; // Return undefined if no match is found
 	};
 
-	const handleBooked = (date: string, tb: string) => {
-		setBookedDateandTime(date + " " + tb + ":00");
-		console.log(date + " " + tb + ":00");
-		// scroll to top of the page
-		window.scrollTo(0, 0);
-		
-	};
-
 	return (
 		<Page padding={0} nav={false}>
 			<Section>
 				{service && provider ?
 					<div className="p-2">
-
-					{ bookedDateandTime ? (
-								<Card className="mb-2 p-2 pl-5 ">
-									<CardDescription className='text-xl flex' >
-										<div className='' >
-											<span className='text-[15px] text-green-500' >
-												Time slot booked for date <span className='underline'>{bookedDateandTime.substring(0, 10)} at {bookedDateandTime.substring(25, 30)}</span> .
-											</span>
-										</div>
-									</CardDescription>
-							</Card>) : null
-					}
-				
 
 
 						<Card className="">
@@ -252,55 +229,31 @@ const ServiceDetails = () => {
 								<CardDescription className='text-xl text-bold'>
 									<CardDescription className='text-lg font-semibold'>{"Availbility"}</CardDescription>
 
+									<div className='grid grid-cols-3' >
 									{availbility?.length ? (
 										[...new Set(availbility.map((avail: any) => avail.date))].map((date: any, _index: any) => (
-											<div className='flex py-3' key={_index}>
-												<div className='ml-2 text-sm'>
-													<p className='flex items-center'>
+											<div className=' py-1 mx-1' key={_index}>
+											
+												
 
+												<div className='w-1/3' >
 
 														<Drawer >
-															<DrawerTrigger asChild>
-																<Button >{date.substring(0, 10)}</Button>
-															</DrawerTrigger>
-															<DrawerContent>
-																<div className="mx-auto w-full max-w-sm">
-																	<DrawerHeader>
-																		<DrawerTitle>{date.substring(0, 10)}</DrawerTitle>
-																		<DrawerDescription>Set time for booking.</DrawerDescription>
-																	</DrawerHeader>
-																	<div className="p-4 pb-0">
-
-
-																	</div>
-																	<DrawerFooter>
-
-																		<DrawerClose asChild>
-																			<div className="flex items-center justify-center space-x-2">
-
-																				{availbility
-																					.filter((avail: any) => avail.date === date)
-																					.map((avail: any, index: any) => (
-																						<Button key={index} size="sm" onClick={() => handleBooked(avail.date, avail.time_block)} >
-																							{avail.time_block}:00
-																						</Button>
-																					))}
-																			</div>
-																			{/* <Button onClick={() => setDrawerOpen(false)} variant="outline">Cancel</Button> */}
-																		</DrawerClose>
-																	</DrawerFooter>
-																</div>
-															</DrawerContent>
+															
+																<Button >{date.substring(8, 10) + date.substring(4, 7)}</Button>
+															
+															
 														</Drawer>
-
-
-													</p>
 												</div>
+
+
+									
 											</div>
 										))
 									) : (
-										<CardDescription className=''>No availbility found for this service...yet</CardDescription>
+										<CardDescription className='w-screen'>No availbility found for this service...yet</CardDescription>
 									)}
+									</div>
 
 								</CardDescription>
 							</CardHeader>
@@ -310,7 +263,7 @@ const ServiceDetails = () => {
 					: null}
 
 			</Section>
-			{provider ? <BottomNavService serviceroviderID={provider!.id} /> : null}
+			{provider ? <BottomNavService serviceroviderID={provider!.id} serviceId={serviceId} /> : null}
 
 		</Page>
 	);

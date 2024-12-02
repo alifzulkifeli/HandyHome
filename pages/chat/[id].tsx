@@ -46,7 +46,7 @@ export default function ChatDetails() {
                     console.log(fetchedMessages);
                     
                 } catch (error) {
-                    console.error('Error fetching messages:', error)
+                    console.log('Error fetching messages:', error)
                 }
             }
         }
@@ -80,7 +80,7 @@ export default function ChatDetails() {
 
                     return () => pb.collection('example').unsubscribe('*'); // U
                 } catch (error) {
-                    console.error('Error subscribing to messages:', error)
+                    console.log('Error subscribing to messages:', error)
                 }
             }
         }
@@ -112,7 +112,7 @@ export default function ChatDetails() {
             // setMessages((prevMessages) => [...prevMessages, savedMessage])
             setNewMessage('')
         } catch (error) {
-            console.error('Error sending message:', error)
+            console.log('Error sending message:', error)
         }
     }
 
