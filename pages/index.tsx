@@ -97,7 +97,7 @@ const Index = () => {
                         setServices([]);
                     }
                 } catch (error) {
-                    console.error("Error fetching services:", error);
+                    console.log("Error fetching services:", error);
                     setServices([]);
                 }
             };

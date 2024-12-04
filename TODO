@@ -1,6 +1,9 @@
 DONE 2/12 Fix Homepage layout and add category, remove button, add details button, integrate lorem picsum
+            Order PAge - add input alamat - add date time picker - submit navbar - 
+3/12 Order  get loggedin user + login functionality + submit save order - payment gateway dummy
+            https://help.billplz.com/article/164-sign-up-a-sandbox-account
 
-3/12 Order PAge - add input alamat - add date time picker - submit navbar - get loggedin user + login functionality + submit save order
-4/12 Order list PAge 
-5/12 Fix cht in mobile
-6/12 order page
+            to get loggedin user, see chat[id]
+4/12 Fix chat in mobile - list PAge
+5/12 
+6/12 

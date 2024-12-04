@@ -24,10 +24,16 @@ export default function ChatDetails() {
     const [newMessage, setNewMessage] = useState('')
     const scrollAreaRef = useRef<HTMLDivElement>(null)
     const lastMessageRef = useRef<HTMLDivElement>(null)
+    const [user, setUser] = useState<any>(null)
+    const [otherUserData, setOtherUserData] = useState<any>([])
+    const [userId, setUserId] = useState<any>(null)
 
     const params = useParams()
     const userChatname: any = params?.id ?? 'Chat' // Recipient ID
-    const currentUserId = 'sbptzw4sjouas1a' // Replace with actual current user ID
+
+    // const currentUser = localStorage.getItem('user')
+    console.log(pb.authStore.token);
+
 
     const scrollToBottom = () => {
         lastMessageRef.current?.scrollIntoView({ behavior: 'instant' })
@@ -36,57 +42,82 @@ export default function ChatDetails() {
     // Fetch initial messages
     useEffect(() => {
         const fetchMessages = async () => {
-            if (userChatname !== 'Chat') {
-                try {
-                    const fetchedMessages = await pb.collection('Messages').getFullList<Message>({
-                        filter: `(senderId="${currentUserId}" && recipientId="${userChatname}") || (senderId="${userChatname}" && recipientId="${currentUserId}")`,
-                        sort: 'created',
-                    })
-                    setMessages(fetchedMessages)
-                    console.log(fetchedMessages);
-                    
-                } catch (error) {
-                    console.log('Error fetching messages:', error)
+            try {
+                let user: { record: { id: string } } | null = null;
+                const userStorage = localStorage.getItem('user');
+                if (userStorage) {
+                    user = JSON.parse(userStorage);
+                } else {
+                    console.log('No user found in localStorage');
+                    return;
                 }
-            }
-        }
 
+                if (user) {
+                    setUserId(user.record.id)
+                    setUser(user.record)
+                }
+
+                if (userChatname !== 'Chat') {
+                    try {
+                        const sp = await pb.collection('ServiceProviders').getOne(userChatname);
+                        setOtherUserData(sp)
+                        console.log(sp);
+
+
+                        const fetchedMessages = await pb.collection('Messages').getFullList<Message>({
+                            filter: `(senderId="${userId}" && recipientId="${userChatname}") || (senderId="${userChatname}" && recipientId="${userId}")`,
+                            sort: 'created',
+                        })
+                        setMessages(fetchedMessages)
+                        console.log(fetchedMessages);
+
+                    } catch (error) {
+                        console.log('Error fetching messages:', error)
+                    }
+                }
+            } catch (error) {
+                console.log('Error fetching user:', error)
+            }
+
+        }
         fetchMessages()
-    }, [userChatname, currentUserId])
+    }, [userChatname])
 
-    // Subscribe to new messages
+    // Initialize userId and user from localStorage
     useEffect(() => {
-        const subscribeToMessages = async () => {
-            if (userChatname !== 'Chat') {
-                try {
-                    const unsubscribe = pb.collection('Messages').subscribe('*', (e) => {
-                        if (e.action === 'create') {
-                            const newMessage = e.record
-
-                            if (
-                                (newMessage.senderId === currentUserId && newMessage.recipientId === userChatname) ||
-                                (newMessage.senderId === userChatname && newMessage.recipientId === currentUserId)
-                            ) {
-                                setMessages((prevMessages) => {
-                                    // Avoid adding duplicate messages
-                                    if (!prevMessages.some((msg) => msg.id === newMessage.id)) {
-                                        return [...prevMessages, newMessage]
-                                    }
-                                    return prevMessages
-                                })
-                            }
-                        }
-                    })
-
-                    return () => pb.collection('example').unsubscribe('*'); // U
-                } catch (error) {
-                    console.log('Error subscribing to messages:', error)
-                }
-            }
+        const userStorage = localStorage.getItem('user');
+        if (userStorage) {
+            const user = JSON.parse(userStorage);
+            setUserId(user.record.id);
+            setUser(user.record);
+        } else {
+            console.log('No user found in localStorage');
         }
+    }, []);
 
-        subscribeToMessages()
-    }, [userChatname, currentUserId])
+
+    // Fetch messages once userId is set
+    useEffect(() => {
+        const fetchMessages = async () => {
+            if (!userId || userChatname === 'Chat') return;
+
+            try {
+                const sp = await pb.collection('ServiceProviders').getOne(userChatname);
+                setOtherUserData(sp);
+
+                const fetchedMessages = await pb.collection('Messages').getFullList<Message>({
+                    filter: `(senderId="${userId}" && recipientId="${userChatname}") || (senderId="${userChatname}" && recipientId="${userId}")`,
+                    sort: 'created',
+                });
+
+                setMessages(fetchedMessages);
+            } catch (error) {
+                console.log('Error fetching messages:', error);
+            }
+        };
+
+        fetchMessages();
+    }, [userId, userChatname]);
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -94,60 +125,104 @@ export default function ChatDetails() {
         }, 100); // Debounce for smoother UI
         return () => clearTimeout(timer);
     }, [messages]);
-    
+
 
     const handleSendMessage = async () => {
-        if (newMessage.trim() === '') return
-
-        const messageData: Message = {
-            id: '', // Will be generated by the database
+        if (newMessage.trim() === '') return;
+    
+        const messageData: Partial<Message> = {
             message_text: newMessage,
-            senderId: currentUserId,
+            senderId: userId,
             recipientId: userChatname,
             timestamp: new Date().toISOString(),
-        }
-
+        };
+    
         try {
-            const savedMessage = await pb.collection('Messages').create(messageData)
-            // setMessages((prevMessages) => [...prevMessages, savedMessage])
-            setNewMessage('')
+            const savedMessage = await pb.collection('Messages').create(messageData);
+            
+            // Optimistically update the messages list
+            setMessages((prevMessages) => [...prevMessages, savedMessage]);
+    
+            setNewMessage(''); // Clear the input field
+            scrollToBottom(); // Ensure scroll to the latest message
         } catch (error) {
-            console.log('Error sending message:', error)
+            console.log('Error sending message:', error);
         }
-    }
+    };
 
+
+
+    useEffect(() => {
+        if (!userId || userChatname === 'Chat') return;
+    
+        const subscribeToMessages = async () => {
+            try {
+                // Subscribe to new messages
+                pb.collection('Messages').subscribe('*', function (e) {
+                    if (e.action === 'create') {
+                        const newMessage = e.record;
+
+                        // Check if the new message belongs to the current chat
+                        if (
+                            (newMessage.senderId === userId && newMessage.recipientId === userChatname) ||
+                            (newMessage.senderId === userChatname && newMessage.recipientId === userId)
+                        ) {
+                            setMessages((prevMessages) => {
+                                // Avoid duplicate messages by checking for existing IDs
+                                if (!prevMessages.some((msg) => msg.id === newMessage.id)) {
+                                    return [...prevMessages, newMessage];
+                                }
+                                return prevMessages;
+                            });
+                            scrollToBottom(); // Ensure scroll to latest message
+                        }
+                    }
+                    console.log(e.action);
+                    console.log(e.record);
+                }, { /* other options like expand, custom headers, etc. */ });
+            } catch (error) {
+                console.log('Error subscribing to messages:', error);
+            }
+        };
+    
+        subscribeToMessages();
+    }, [userId, userChatname]); // Dependencies to reinitialize subscription
+
+    
     return (
         <div className="">
             <Page padding={0} nav={false}>
                 <Section>
-                    <div className="flex flex-col h-[84vh] bg-background">
+                    <div className="flex flex-col h-[80vh] bg-background">
                         <ScrollArea className="flex-grow p-4 h-full" ref={scrollAreaRef}>
                             <div className="mx-auto">
                                 {messages.map((message, index) => (
                                     <div
                                         key={index}
-                                        className={`flex ${message.senderId === currentUserId ? 'justify-end' : 'justify-start'} mb-4`}
+                                        className={`flex ${message.senderId === userId ? 'justify-end' : 'justify-start'} mb-4`}
                                         ref={index === messages.length - 1 ? lastMessageRef : null}
                                     >
                                         <div
-                                            className={`flex items-start max-w-[80%] ${message.senderId === currentUserId ? 'flex-row-reverse' : 'flex-row'}`}
+                                            className={`flex items-start max-w-[80%] ${message.senderId === userId ? 'flex-row-reverse' : 'flex-row'}`}
                                         >
                                             <Avatar className="w-8 h-8">
                                                 <AvatarFallback>
-                                                    {message.senderId === currentUserId ? 'U' : 'R'}
+                                                    {message.senderId === userId ?
+                                                        'U'
+                                                        : 'R'}
                                                 </AvatarFallback>
                                                 <AvatarImage
                                                     src={
-                                                        message.senderId === currentUserId
-                                                            ? '/user-avatar.png'
-                                                            : '/recipient-avatar.png'
+                                                        message.senderId === userId
+                                                            ? `https://pb.alifz.xyz/api/files/_pb_users_auth_/${user.id}/${user.avatar}`
+                                                            : `https://pb.alifz.xyz/api/files/${otherUserData.collectionId}/${otherUserData.id}/${otherUserData.avatar}`
                                                     }
                                                 />
                                             </Avatar>
                                             <div
-                                                className={`mx-2 p-3 rounded-lg ${message.senderId === currentUserId
-                                                        ? 'bg-primary text-primary-foreground'
-                                                        : 'bg-secondary text-secondary-foreground'
+                                                className={`mx-2 p-3 rounded-lg ${message.senderId === userId
+                                                    ? 'bg-primary text-primary-foreground'
+                                                    : 'bg-secondary text-secondary-foreground'
                                                     }`}
                                             >
                                                 {message.message_text}
