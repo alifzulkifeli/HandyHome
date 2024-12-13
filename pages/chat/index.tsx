@@ -1,3 +1,4 @@
+import BackHome from "@/components/backHome"
 import Page from "@/components/page"
 import Section from "@/components/section"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -25,9 +26,11 @@ export default function Chat() {
     id: string;
     avatar?: string;
     collectionId: string;
+    name: string;
   };
+  const [user, setUser] = useState<RecordModel | any>(null)
 
-  const [otherUserData, setOtherUserData] = useState<(Message | RecordModel)[]>([])
+  const [otherUserData, setOtherUserData] = useState<(any | Message | RecordModel)[]>([])
 
 
 
@@ -37,14 +40,17 @@ export default function Chat() {
     let otherUser: [] = [];
     const fetchMessages = async () => {
       try {
-        let user: { record: { id: string } } | null = null;
-        const userStorage = localStorage.getItem('user');
+        let user: { model: { id: string } } | null = null;
+        const userStorage = localStorage.getItem('pocketbase_auth');
         if (userStorage) {
           user = JSON.parse(userStorage);
+          setUser(user);
         } else {
           console.log('No user found in localStorage');
           return;
         }
+
+        
         
 
         if (!user) {
@@ -52,12 +58,14 @@ export default function Chat() {
           return;
         }
 
+        console.log(user.model.id);
+        
         const fetchedMessages = await pb.collection('Messages').getFullList<Message>({
-            filter: `(senderId="${user.record.id}"  || recipientId="${user.record.id}")`,
+            filter: `(senderId="${user.model.id}"  || recipientId="${user.model.id}")`,
             sort: '-created',
         })
 
-        console.log(fetchedMessages);
+        // console.log(fetchedMessages);
         
 
         for (let i = 0; i < fetchedMessages.length; i++) {
@@ -66,7 +74,7 @@ export default function Chat() {
           console.log(message.senderId);
           console.log(message.recipientId);
 
-          if (message.senderId === user.record.id && !messageList.find(m => m.name === message.recipientId)) {
+          if (message.senderId === user.model.id && !messageList.find(m => m.name === message.recipientId)) {
             otherUser.push(message.recipientId);
              messageList.push({
               id: message.id,
@@ -77,7 +85,7 @@ export default function Chat() {
               recipientId: message.recipientId,
             })
 
-          } else if (message.recipientId === user.record.id && !messageList.find(m => m.name === message.senderId)) {
+          } else if (message.recipientId === user.model.id && !messageList.find(m => m.name === message.senderId)) {
             otherUser.push(message.senderId);
             messageList.push({
               id: message.id,
@@ -95,6 +103,8 @@ export default function Chat() {
           
         }
         setMessages(messageList)
+        console.log(messageList);
+        
         
         for (let i = 0; i < messageList.length; i++) {
 
@@ -110,13 +120,16 @@ export default function Chat() {
 
     }
     fetchMessages()
+    console.log(otherUserData);
+    
   }, [userId])
 
   const router = useRouter();
   return (
     <Page padding={0} >
       <Section>
-        <div className="h-full bg-background text-foreground w-full">
+        {user && otherUserData.length > 0 ? (
+          <div className="h-full bg-background text-foreground w-full">
           <ScrollArea className="h-full">
             <div className="p-1 space-y-1">
               {messages.map((message, index) => (
@@ -130,7 +143,7 @@ export default function Chat() {
                       }
                     </Avatar>
                     <div className="flex-1 min-w-0">
-                      <p className="font-semibold truncate">{message.name}</p>
+                      {otherUserData[index] && 'name' in otherUserData[index] && otherUserData[index].avatar ? otherUserData[index].name : message.name}
                       <p className="text-sm text-muted-foreground truncate">{message.lastMessage}</p>
                     </div>
                   </CardContent>
@@ -139,6 +152,9 @@ export default function Chat() {
             </div>
           </ScrollArea>
         </div>
+        ) : (
+          <BackHome />
+        )}
       </Section>
     </Page>
   )
