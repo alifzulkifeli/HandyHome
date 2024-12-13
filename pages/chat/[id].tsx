@@ -248,7 +248,7 @@ export default function ChatDetails() {
                                         onChange={(e) => setNewMessage(e.target.value)}
                                         className="flex-grow"
                                     />
-                                    <Button type="submit" size="icon" onClick={(e) => {
+                                    <Button type="submit" size="icon" onMouseDown={(e) => {
                                         e.preventDefault()
                                         handleSendMessage()
                                     }} >
