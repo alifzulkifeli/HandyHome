@@ -6,4 +6,5 @@ DONE 2/12 Fix Homepage layout and add category, remove button, add details butto
 
 4/12 
 5/12 
-6/12 Fix chat in mobile[chat prevent sent same message(now target id, maybe can target content), in mobile lepas send dia hilang] - list PAge - signup user - submit save order - payment gateway dummy
+13/12 Fix chat in mobile[chat prevent sent same message
+    in mobile lepas send dia hilang] - list PAge - signup user - submit save order - payment gateway dummy

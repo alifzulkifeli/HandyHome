@@ -130,14 +130,14 @@ export default function ChatDetails() {
     const handleSendMessage = async () => {
         if (newMessage.trim() === '') return;
 
-    
+
         const messageData: Partial<Message> = {
             message_text: newMessage,
             senderId: userId,
             recipientId: userChatname,
             timestamp: new Date().toISOString(),
         };
-    
+
         try {
             const savedMessage = await pb.collection('Messages').create(messageData);
 
@@ -152,7 +152,7 @@ export default function ChatDetails() {
 
     useEffect(() => {
         if (!userId || userChatname === 'Chat') return;
-    
+
         const subscribeToMessages = async () => {
             try {
                 // Subscribe to new messages
@@ -166,7 +166,7 @@ export default function ChatDetails() {
                             (newMessage.senderId === userChatname && newMessage.recipientId === userId)
                         ) {
                             setMessages((prevMessages) => {
-                                
+
                                 // log the message object
                                 console.log(newMessage);
                                 console.log(prevMessages);
@@ -187,11 +187,11 @@ export default function ChatDetails() {
                 console.log('Error subscribing to messages:', error);
             }
         };
-    
+
         subscribeToMessages();
     }, [userId, userChatname]); // Dependencies to reinitialize subscription
 
-    
+
     return (
         <div className="">
             <Page padding={0} nav={false}>
@@ -237,11 +237,8 @@ export default function ChatDetails() {
                         </ScrollArea>
                         <div className="p-4 bg-background border-t">
                             <div className="max-w-2xl mx-auto">
-                                <form
-                                    onSubmit={(e) => {
-                                        e.preventDefault()
-                                        handleSendMessage()
-                                    }}
+                                <div
+
                                     className="flex space-x-2"
                                 >
                                     <Input
@@ -251,11 +248,14 @@ export default function ChatDetails() {
                                         onChange={(e) => setNewMessage(e.target.value)}
                                         className="flex-grow"
                                     />
-                                    <Button type="submit" size="icon">
+                                    <Button type="submit" size="icon" onClick={(e) => {
+                                        e.preventDefault()
+                                        handleSendMessage()
+                                    }} >
                                         <Send className="h-4 w-4" />
                                         <span className="sr-only">Send</span>
                                     </Button>
-                                </form>
+                                </div>
                             </div>
                         </div>
                     </div>
