@@ -129,6 +129,7 @@ export default function ChatDetails() {
 
     const handleSendMessage = async () => {
         if (newMessage.trim() === '') return;
+
     
         const messageData: Partial<Message> = {
             message_text: newMessage,
@@ -139,10 +140,7 @@ export default function ChatDetails() {
     
         try {
             const savedMessage = await pb.collection('Messages').create(messageData);
-            
-            // Optimistically update the messages list
-            setMessages((prevMessages) => [...prevMessages, savedMessage]);
-    
+
             setNewMessage(''); // Clear the input field
             scrollToBottom(); // Ensure scroll to the latest message
         } catch (error) {
@@ -168,6 +166,11 @@ export default function ChatDetails() {
                             (newMessage.senderId === userChatname && newMessage.recipientId === userId)
                         ) {
                             setMessages((prevMessages) => {
+                                
+                                // log the message object
+                                console.log(newMessage);
+                                console.log(prevMessages);
+
                                 // Avoid duplicate messages by checking for existing IDs
                                 if (!prevMessages.some((msg) => msg.id === newMessage.id)) {
                                     return [...prevMessages, newMessage];
