@@ -60,7 +60,7 @@ export default function Order() {
 
 
         const records = await pb.collection('Bookings').getFullList({
-            filter: `user_id.id="sbptzw4sjouas1a"`,
+            filter: `user_id.id="${user.model.id}"`,
             expand: 'user_id,service_id',
         });
 
@@ -104,8 +104,7 @@ export default function Order() {
 
   const handleRouteToOrderDetails = (order: RecordModel) => {
     router.push({
-        pathname: '/order/[id]',
-        query: { data: JSON.stringify(order) },
+        pathname: '/order/' + order.id,
     });
   }
 
@@ -114,30 +113,13 @@ export default function Order() {
     <Page padding={0} >
       <Section>
         {user && orders.length  > 0 ? (
-          <div className="h-full bg-background text-foreground w-full">
-          <ScrollArea className="h-full">
-            <div className="p-1  space-y-3">
+          <div className="h-full bg-background  text-foreground w-full">
+          <ScrollArea className="h-full ">
+            <div className="p-5  space-y-3">
               {orders.map((order, index) => (
-                // <Card key={order.id} className="hover:bg-accent transition-colors" onClick={() => router.push('/oredr/' + order.id)} >
-                //   <CardContent className="p-4 flex items-center space-x-4">
-                //     <Avatar>
-                //       {/* <AvatarImage src={message.avatar} alt={message.name} /> */}
-                //       {/* <AvatarFallback>{message.name.split(' ').map(n => n[0]).join('')}</AvatarFallback> */}
-                //       {
-                //         order.id
-                //       }
-                //     </Avatar>
-                //     <div className="flex-1 min-w-0">
-                //       {order.id}
-                //       <p className="text-sm text-muted-foreground truncate">{order.id}</p>
-                //     </div>
-                //   </CardContent>
-                
-                // </Card>
 
-
-                <Card className="w-full max-w-md">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <Card className="w-full  " key={index} >
+                <CardHeader className="flex flex-row items-center  justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Order #{order.id}</CardTitle>
                   <Badge className={statusColor[order.status]}>{order.status}</Badge>
                 </CardHeader>
