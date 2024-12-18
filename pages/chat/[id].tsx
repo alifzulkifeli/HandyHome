@@ -44,7 +44,7 @@ export default function ChatDetails() {
     useEffect(() => {
         const fetchMessages = async () => {
             try {
-                let user: { record: { id: string } } | null = null;
+                let user: { model: { id: string } } | null = null;
                 const userStorage = localStorage.getItem('pocketbase_auth');
                 if (userStorage) {
                     user = JSON.parse(userStorage);
@@ -54,8 +54,8 @@ export default function ChatDetails() {
                 }
 
                 if (user) {
-                    setUserId(user.record.id)
-                    setUser(user.record)
+                    setUserId(user.model.id)
+                    setUser(user.model)
                 }
 
                 if (userChatname !== 'Chat') {
@@ -195,7 +195,7 @@ export default function ChatDetails() {
 
     return (
         <div className="">
-            <Page padding={0} nav={false}>
+            <Page padding={0} nav={false}  >
                 <Section>
                     {user && otherUserData ?
                     <div className="flex flex-col bg-background">

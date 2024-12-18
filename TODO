@@ -10,4 +10,9 @@ DONE 2/12 Fix Homepage layout and add category, remove button, add details butto
     in mobile lepas send dia hilang] 
     
     
-    - list order - signup user - submit save order - payment gateway dummy
+    - list order 
+    
+    
+    
+- signup user - submit save order - payment gateway dummy
+- pb-16 in page.tsx cause chat to have bottom padding

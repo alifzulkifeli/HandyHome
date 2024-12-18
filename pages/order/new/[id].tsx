@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/table"
 import { Label } from '@/components/ui/label'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 
 // Define proper types
 interface Service {
@@ -71,8 +72,10 @@ export default function ChatDetails() {
 
     const params = useParams()
     const serviceId: any = params?.id ?? 'Pending' // Recipient ID
-    const currentUserId = 'sbptzw4sjouas1a' // Replace with actual current user ID
+    // const currentUserId = 'sbptzw4sjouas1a' // Replace with actual current user ID
+    const [currentUserId, setUserId] = useState<string | null>(null)
 
+    const router = useRouter();
     useEffect(() => {
         const fetchServiceDetails = async () => {
             if (!serviceId) {
@@ -81,6 +84,24 @@ export default function ChatDetails() {
             }
 
             try {
+
+
+                let user: { model: { id: string } } | null = null;
+                const userStorage = localStorage.getItem('pocketbase_auth');
+                if (userStorage) {
+                    user = JSON.parse(userStorage);
+                } else {
+                    console.log('No user found in localStorage');
+                    return;
+                }
+
+                if (user) {
+                    setUserId(user.model.id)
+                    console.log("User ID:", user.model.id);
+                }
+
+
+                
                 // Get today's date in yyyy-mm-dd format
                 const today = new Date().toISOString().split('T')[0];
 
@@ -136,6 +157,28 @@ export default function ChatDetails() {
             }
         }
         setListTime(tempList)
+    }
+
+    const submitNewOrder = async () => {
+        try {
+            const orderData = {
+                user_id: currentUserId,
+                service_id: service?.id,
+                booking_date: selectedDate,
+                booking_time: selectedTime,
+                address1: address.Adress1,
+                address2: address.Adress2,
+                status: "Ongoing",
+                price: service?.price,
+            };
+
+            const newOrder = await pb.collection('Bookings').create(orderData);
+            console.log("New order created:", newOrder);
+            router.push('/order/');
+
+        } catch (error) {
+            console.log("Error creating new order:", error);
+        }
     }
 
     return (
@@ -283,9 +326,9 @@ export default function ChatDetails() {
                 <nav className='fixed bottom-0 w-full border-t bg-zinc-100  dark:border-zinc-800 dark:bg-zinc-900'>
                     <div className=' flex h-16  items-center justify-around'>
 
-                        <Link
+                        <div
                             key="Order Now"
-                            href={("/order/new/")}
+                            onClick={submitNewOrder}
                             className={`flex h-full w-full flex items-center justify-center space-y-1 bg-green-200`}
                         >
                             <svg
@@ -301,9 +344,9 @@ export default function ChatDetails() {
                                 />
                             </svg>
                             <span className='text-xs text-zinc-600 dark:text-zinc-400 ml-2 ' >
-                                {"Proceed to Payment"}
+                                {"Create Booking"}
                             </span>
-                        </Link>
+                        </div>
                     </div>
                 </nav>
             </div>

@@ -110,8 +110,9 @@ export default function Order() {
 
   const router = useRouter();
   return (
-    <Page padding={0} >
-      <Section>
+
+     <Page padding={0} >
+      <Section >
         {user && orders.length  > 0 ? (
           <div className="h-full bg-background  text-foreground w-full">
           <ScrollArea className="h-full ">
@@ -152,5 +153,6 @@ export default function Order() {
         )}
       </Section>
     </Page>
+
   )
 }

@@ -1,6 +1,10 @@
 const BackHome = () => {
     return ( 
-        <h1>Back to home</h1>
+        <h1>Basdad
+            asdasd
+            asdasd
+          
+        </h1>
      );
 }
  
