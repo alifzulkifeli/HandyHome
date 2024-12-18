@@ -237,7 +237,7 @@ export default function ChatDetails() {
                             ))}
                         </div>
                     </ScrollArea>
-                    <div className="p-4 bg-white z-10 sticky bottom-0 left-0 border-t w-full opacity-100 p-4">
+                    <footer className="p-4 bg-white z-10 sticky bottom-0 left-0 border-t w-full opacity-100 p-4">
                         <div className="max-w-2xl mx-auto">
                             <div
 
@@ -259,7 +259,7 @@ export default function ChatDetails() {
                                 </Button>
                             </div>
                         </div>
-                    </div>
+                    </footer>
                 </div>
                 : <BackHome /> }
                 </Section>
