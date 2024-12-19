@@ -103,7 +103,7 @@ const Appbar: React.FC = () => {
 
                         {isHomePage || isChatPage || isOrderPage ? (
                             <Link href='/'>
-                                <Image src="/images/logo-dark.png" className='h-12' alt="Logo" />
+                                <img src="/images/logo-dark.png" className='h-12' alt="Logo" />
                             </Link>
                         ) : (
                             <button onClick={() => router.back()} className='text-blue-600'>
@@ -126,7 +126,7 @@ const Appbar: React.FC = () => {
                                 <DropdownMenuContent>
                                     <DropdownMenuLabel onClick={() => router.push('/profile')}  >My Account</DropdownMenuLabel>
                                     <DropdownMenuSeparator />
-                                    <DropdownMenuItem onClick={() => router.push('/install')} >Install</DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => router.push('/install')} >Install Guide</DropdownMenuItem>
                                     <DropdownMenuItem onClick={handleLogout} >Log out</DropdownMenuItem>
 
                                 </DropdownMenuContent>
