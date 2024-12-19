@@ -44,7 +44,7 @@ export default function TabsDemo() {
                                     height={200}
                                     className="rounded-lg  mx-auto"
                                 />
-                                    <li>Choose the "Add to Home Screen"</li>
+                                    <li>Choose the &#34;Add to Home Screen&#34;</li>
                                     <Image
                                     src="/images/install/image6_install.png"
                                     alt=""
@@ -52,7 +52,7 @@ export default function TabsDemo() {
                                     height={200}
                                     className="rounded-lg  mx-auto"
                                 />
-                                    <li>Click "Add"</li>
+                                    <li>Click &#34;Add&#34;</li>
                                     <Image
                                     src="/images/install/image7_install.png"
                                     alt=""
@@ -81,7 +81,7 @@ export default function TabsDemo() {
                                     height={200}
                                     className="rounded-lg  mx-auto"
                                 />
-                                    <li>Choose "Add to home screen"</li>
+                                    <li>Choose &#34;Add to home screen&#34;</li>
                                     <Image
                                     src="/images/install/image2_install.png"
                                     alt=""
@@ -89,7 +89,7 @@ export default function TabsDemo() {
                                     height={200}
                                     className="rounded-lg  mx-auto"
                                 />
-                                    <li>Choose "Install"</li>
+                                    <li>Choose &#34;Install&#34;</li>
                                     <Image
                                     src="/images/install/image3_install.png"
                                     alt=""
@@ -97,7 +97,7 @@ export default function TabsDemo() {
                                     height={200}
                                     className="rounded-lg  mx-auto"
                                 />
-                                    <li>Tap "Install"</li>
+                                    <li>Tap &#34;Install&#34;</li>
                                     <Image
                                     src="/images/install/image4_install.png"
                                     alt=""
