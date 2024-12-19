@@ -26,6 +26,20 @@
 			"purpose": "maskable"
 		}
 	],
+	"screenshots": [
+		{
+			"src": "/src/img/screenshots/shot1.png",
+			"sizes": "400x822",
+			"type": "image/png",
+			"form_factor": "narrow"
+		},
+		{
+			"src": "/src/img/screenshots/shot7.png",
+			"sizes": "1280x676",
+			"type": "image/png",
+			"form_factor": "wide"
+		}
+	],
 	"start_url": "/?source=pwa",
 	"orientation": "portrait",
 	"display": "standalone",

@@ -13,6 +13,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from './ui/button'
 import { useEffect, useState } from 'react'
 
+// Extend the Window interface to include deferredPrompt
+declare global {
+    interface Window {
+        deferredPrompt: any;
+    }
+}
+
 const links = [
     { label: 'Story', href: '/story' },
     { label: 'Recipes', href: '/recipes' },
@@ -38,18 +45,18 @@ const Appbar: React.FC = () => {
 
 
     const handleInstall = async () => {
-        let deferredPrompt:any;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            deferredPrompt = e;
-        });
-
-        if (deferredPrompt !== null) {
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            if (outcome === 'accepted') {
-                deferredPrompt = null;
-            }
+        if (window.deferredPrompt) {
+            window.deferredPrompt.prompt()
+            window.deferredPrompt.userChoice.then((choiceResult: { outcome: string }) => {
+                if (choiceResult.outcome === 'accepted') {
+                    console.log('User accepted the A2HS prompt')
+                } else {
+                    console.log('User dismissed the A2HS prompt')
+                }
+                window.deferredPrompt = null
+            })
         }
+        
     }
 
     useEffect(() => {
