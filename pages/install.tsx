@@ -22,10 +22,10 @@ export default function InstallGuide() {
         <Card>
           <CardHeader>
             <CardTitle>App Installed</CardTitle>
-            <CardDescription>You're already using the installed app!</CardDescription>
+            <CardDescription>You&apos;re already using the installed app!</CardDescription>
           </CardHeader>
           <CardContent>
-            <p>Great job! You've successfully installed our PWA. Enjoy the app experience!</p>
+            <p>Great job! You&apos;ve successfully installed our PWA. Enjoy the app experience!</p>
           </CardContent>
         </Card>
       </div>

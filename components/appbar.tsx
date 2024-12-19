@@ -12,6 +12,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from './ui/button'
 import { useEffect, useState } from 'react'
+import Image from 'next/image'
 
 
 // Extend the Window interface to include deferredPrompt
@@ -102,7 +103,7 @@ const Appbar: React.FC = () => {
 
                         {isHomePage || isChatPage || isOrderPage ? (
                             <Link href='/'>
-                                <img src="/images/logo-dark.png" className='h-12' alt="Logo" />
+                                <Image src="/images/logo-dark.png" className='h-12' alt="Logo" />
                             </Link>
                         ) : (
                             <button onClick={() => router.back()} className='text-blue-600'>
