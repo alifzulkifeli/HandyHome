@@ -35,7 +35,8 @@ const Appbar: React.FC = () => {
     const isChatPage = router.pathname === '/chat'
     const isOrderPage = router.pathname === '/order'
     const [user, setUser] = useState<any>(null)
-    
+    const [installable, setInstallable] = useState(false);
+
     const handleLogout = async () => {
         await pb.authStore.clear()
         setUser(null)
@@ -44,58 +45,54 @@ const Appbar: React.FC = () => {
     }
 
     
+    const handleInstallClick = async () => {
+        if (window.deferredPrompt) {
+            const deferredPrompt = window.deferredPrompt;
+            deferredPrompt.prompt();
+            const choiceResult = await deferredPrompt.userChoice;
 
+            if (choiceResult.outcome === 'accepted') {
+                console.log('User accepted the A2HS prompt');
+            } else {
+                console.log('User dismissed the A2HS prompt');
+            }
 
-    const handleInstall = async () => {
-        let deferredPrompt: any;
-        const addBtn = document.createElement('button');
-        addBtn.style.display = 'none';
-        document.body.appendChild(addBtn);
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            // Prevent Chrome 67 and earlier from automatically showing the prompt
-            e.preventDefault();
-            // Stash the event so it can be triggered later.
-            deferredPrompt = e;
-            // Update UI to notify the user they can add to home screen
-            addBtn.style.display = 'block';
-        
-            addBtn.addEventListener('click', () => {
-              // hide our user interface that shows our A2HS button
-              addBtn.style.display = 'none';
-              // Show the prompt
-              deferredPrompt.prompt();
-              // Wait for the user to respond to the prompt
-              deferredPrompt.userChoice.then((choiceResult: any) => {
-                if (choiceResult.outcome === 'accepted') {
-                  console.log('User accepted the A2HS prompt');
-                } else {
-                  console.log('User dismissed the A2HS prompt');
-                }
-                deferredPrompt = null;
-              });
-            });
-          });
+            // Reset the deferredPrompt for future attempts
+            window.deferredPrompt = null;
+            setInstallable(false);
+        } else {
+            console.log('No deferredPrompt event available');
+        }
     }
 
     useEffect(() => {
-        
+        // Fetch user on mount
         const fetchUser = async () => {
             try {
                 const user = await pb.collection("users").authRefresh();
                 setUser(user.record);
-                console.log(user);
-                
             } catch (error) {
                 console.log(error);
             }
         }
 
-       
         fetchUser();
-
-        
     }, [pb.authStore]);
+
+    useEffect(() => {
+        const handleBeforeInstallPrompt = (e: Event) => {
+            e.preventDefault();
+            // Store the event for later use
+            window.deferredPrompt = e;
+            setInstallable(true);
+        }
+
+        window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+        return () => {
+            window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+        };
+    }, []);
 
     return (
         <div className='fixed top-0 left-0 z-20 w-full bg-zinc-900 pt-safe'>
@@ -128,7 +125,7 @@ const Appbar: React.FC = () => {
                                 <DropdownMenuContent>
                                     <DropdownMenuLabel onClick={() => router.push('/profile')}  >My Account</DropdownMenuLabel>
                                     <DropdownMenuSeparator />
-                                    <DropdownMenuItem onClick={handleInstall} >Install</DropdownMenuItem>
+                                    <DropdownMenuItem onClick={handleInstallClick} >Install</DropdownMenuItem>
                                     <DropdownMenuItem onClick={handleLogout} >Log out</DropdownMenuItem>
 
                                 </DropdownMenuContent>
@@ -136,7 +133,7 @@ const Appbar: React.FC = () => {
                             // <p>asd</p>
                         ) : (
                             <div>
-                                <Button className='mr-4 install' onClick={handleInstall} >Install</Button>
+                                <Button className='mr-4 install' onClick={handleInstallClick} >Install</Button>
                                 <Button onClick={() => router.push("/login")} >Login</Button>
                             </div>
                         )}
