@@ -125,7 +125,7 @@ const Appbar: React.FC = () => {
                                 <DropdownMenuContent>
                                     <DropdownMenuLabel onClick={() => router.push('/profile')}  >My Account</DropdownMenuLabel>
                                     <DropdownMenuSeparator />
-                                    <DropdownMenuItem onClick={handleInstallClick} >Install</DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => router.push('/install')} >Install</DropdownMenuItem>
                                     <DropdownMenuItem onClick={handleLogout} >Log out</DropdownMenuItem>
 
                                 </DropdownMenuContent>
@@ -133,7 +133,6 @@ const Appbar: React.FC = () => {
                             // <p>asd</p>
                         ) : (
                             <div>
-                                <Button className='mr-4 install' onClick={handleInstallClick} >Install</Button>
                                 <Button onClick={() => router.push("/login")} >Login</Button>
                             </div>
                         )}
