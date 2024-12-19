@@ -35,6 +35,23 @@ const Appbar: React.FC = () => {
         router.push('/')
     }
 
+
+
+    const handleInstall = async () => {
+        let deferredPrompt:any;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            deferredPrompt = e;
+        });
+
+        if (deferredPrompt !== null) {
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            if (outcome === 'accepted') {
+                deferredPrompt = null;
+            }
+        }
+    }
+
     useEffect(() => {
         
         const fetchUser = async () => {
@@ -85,12 +102,17 @@ const Appbar: React.FC = () => {
                                 <DropdownMenuContent>
                                     <DropdownMenuLabel onClick={() => router.push('/profile')}  >My Account</DropdownMenuLabel>
                                     <DropdownMenuSeparator />
+                                    <DropdownMenuItem onClick={handleInstall} >Install</DropdownMenuItem>
                                     <DropdownMenuItem onClick={handleLogout} >Log out</DropdownMenuItem>
+
                                 </DropdownMenuContent>
                             </DropdownMenu>
                             // <p>asd</p>
                         ) : (
-                            <Button onClick={() => router.push("/login")} >Login</Button>
+                            <div>
+                                <Button className='mr-4' onClick={handleInstall} >Install</Button>
+                                <Button onClick={() => router.push("/login")} >Login</Button>
+                            </div>
                         )}
 
                     </div>

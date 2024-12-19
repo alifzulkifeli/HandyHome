@@ -1,6 +1,5 @@
 import Card from '@/components/card'
 import Category from '@/components/dd-category'
-import InstallButton from '@/components/InstallButton'
 import City from '@/components/location/dd-city'
 import Postcode from '@/components/location/dd-postcode'
 import State from '@/components/location/dd-state'
@@ -113,7 +112,7 @@ const Index = () => {
         <Page padding={3}>
             <Section>
                 <div className='flex w-full'>
-                    <InstallButton />
+                    
                     <State setNegeri={setNegeri} setCity={setCity} setPostcode={setPostcode} />
                     <City negeri={negeri} setCity={setCity} setPostcode={setPostcode} city={city} />
                     <Postcode city={city} setPostcode={setPostcode} negeri={negeri} />
