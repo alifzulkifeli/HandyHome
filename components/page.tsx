@@ -7,9 +7,10 @@ interface Props {
 	children: React.ReactNode
 	padding: number
 	nav?: boolean
+	fromChat?: boolean
 }
 
-const Page = ({ title, children,padding = 6 , nav = true}: Props) => (
+const Page = ({ title, children, padding = 6, fromChat = false, nav = true }: Props) => (
 	<>
 		{title ? (
 			<Head>
@@ -19,18 +20,24 @@ const Page = ({ title, children,padding = 6 , nav = true}: Props) => (
 
 		<Appbar />
 
-		<main
-			/**
-			 * Padding top = `appbar` height
-			 * Padding bottom = `bottom-nav` height
-			 */
-			className='mx-auto max-w-screen-md pt-20 pb-16 px-safe sm:pb-0'
-		>
-			<div className={'p-'+ padding}>{children}</div>
-		</main>
+		{fromChat ? (
+			<main
+				className='mx-auto max-w-screen-md pt-20  px-safe sm:pb-0'
+			>
+				<div className={'p-' + padding}>{children}</div>
+			</main>
+		) : (
 
-		{ nav ?  <BottomNav /> : null}
-		
+			<main
+				className='mx-auto max-w-screen-md pt-20 pb-16 px-safe sm:pb-0'
+			>
+				<div className={'p-' + padding}>{children}</div>
+			</main>
+		)}
+
+
+		{nav ? <BottomNav /> : null}
+
 	</>
 )
 

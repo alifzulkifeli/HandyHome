@@ -241,7 +241,7 @@ const ServiceDetails = () => {
 												</div>
 											))
 										) : (
-											<CardDescription className='w-screen'>No availbility found for this service...yet</CardDescription>
+											<CardDescription className='w-full text-red-500 font-bold text-lg'>Not Available</CardDescription>
 										)}
 									</div>
 

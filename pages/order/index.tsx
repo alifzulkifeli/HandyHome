@@ -25,6 +25,7 @@ export default function Order() {
     expand?: {
       service_id: {
         service_name: string;
+        description: string;
       };
     };
   };
@@ -62,6 +63,7 @@ export default function Order() {
         const records = await pb.collection('Bookings').getFullList({
             filter: `user_id.id="${user.model.id}"`,
             expand: 'user_id,service_id',
+            sort: '-created',
         });
 
         const mappedRecords: RecordModel[] = records.map(record => ({
@@ -75,6 +77,7 @@ export default function Order() {
           expand: {
             service_id: {
               service_name: record.expand?.service_id?.service_name || '',
+              description: record.expand?.service_id?.description || '',
             },
           },
         }));
@@ -128,11 +131,15 @@ export default function Order() {
                   <div className="grid gap-2">
                     <div className="flex items-center">
                       <CalendarIcon className="mr-2 h-4 w-4 opacity-70" />
-                      <span className="text-xs text-muted-foreground">{order.booking_date}</span>
+                      <span className="text-xs text-muted-foreground">{order.booking_date.substring(0,10)}</span>
                     </div>
                     <div className="flex items-center">
                       <PackageIcon className="mr-2 h-4 w-4 opacity-70" />
-                      <span className="text-xs text-muted-foreground">{order.expand?.service_id?.service_name} </span>
+                      <span className="text-xs font-bold text-muted-foreground">{order.expand?.service_id?.service_name} </span>
+                    </div>
+                    <div className="flex items-center">
+                     
+                      <span className="text-xs pl-6 text-muted-foreground">{order.expand?.service_id?.description} </span>
                     </div>
                     <div className="flex items-center font-bold">
                       <TruckIcon className="mr-2 h-4 w-4 opacity-70" />

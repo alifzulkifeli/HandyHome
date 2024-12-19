@@ -76,12 +76,14 @@ const Appbar: React.FC = () => {
                             <DropdownMenu>
                                 <DropdownMenuTrigger>
                                     <Avatar>
+                                        { user.avatar ?
                                         <AvatarImage src={ `https://pb.alifz.xyz/api/files/_pb_users_auth_/${user.id}/${user.avatar}`} />
-                                        <AvatarFallback>U</AvatarFallback>
+                                        :<AvatarImage src='https://pb.alifz.xyz/api/files/novm4dln6wcco7x/tnxkz1axt5fvz16/l60_hf_1_QJJvJvC9BM.png'/> 
+                                    }
                                     </Avatar>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent>
-                                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                                    <DropdownMenuLabel onClick={() => router.push('/profile')}  >My Account</DropdownMenuLabel>
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem onClick={handleLogout} >Log out</DropdownMenuItem>
                                 </DropdownMenuContent>

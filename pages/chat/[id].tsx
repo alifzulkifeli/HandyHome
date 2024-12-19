@@ -194,12 +194,12 @@ export default function ChatDetails() {
 
 
     return (
-        <div className="">
-            <Page padding={0} nav={false}  >
+        <div className="-mb-16">
+            <Page padding={0} nav={false} fromChat={true} >
                 <Section>
                     {user && otherUserData ?
                     <div className="flex flex-col bg-background">
-                    <ScrollArea className="flex-grow p-3 " ref={scrollAreaRef}>
+                    <ScrollArea className="flex-grow p-3 min-h-[80vh]" ref={scrollAreaRef}>
                         <div className="mx-auto">
                             {messages.map((message, index) => (
                                 <div

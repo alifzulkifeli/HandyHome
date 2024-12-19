@@ -13,36 +13,55 @@ import { useToast } from "@/hooks/use-toast"
 import { ToastAction } from "@/components/ui/toast"
 
 
-export default function LoginForm() {
+export default function SignUp() {
     const { toast } = useToast()
     const router = useRouter()
 
-    const [email, setEmail] = useState("aliff@foo.bar")
-    const [password, setPassword] = useState('12345678')
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         const form = e.target as HTMLFormElement;
         try {
+            const data = {
+                "email": form.email.value,
+                "emailVisibility": true,
+                "password": form.password.value,
+                "passwordConfirm": form.password2.value,
+            };
+
+            console.log(data);
             
-            const authData = await pb.collection('Users').authWithPassword(
-                form.email.value,
-                form.password.value
-            );
-            console.log(authData);
-            localStorage.setItem('pocketbase_auth', JSON.stringify(authData));
-            router.push('/');
+
+            if (data.password !== data.passwordConfirm) {
+                throw new Error("Passwords do not match");
+            }
+            
+            const record = await pb.collection('Users').create(data);
+
+            if (record){
+                const authData = await pb.collection('Users').authWithPassword(
+                    form.email.value,
+                    form.password.value
+                );
+                console.log(authData);
+                localStorage.setItem('pocketbase_auth', JSON.stringify(authData));
+                router.push('/');
+                    
+            }
+            console.log(record);
+            
+            
+   
+
         } catch (error) {
             console.log(error);
             toast({
                 variant: "destructive",
                 title: "Uh oh! Something went wrong.",
-                description: "Account not found. Please check your email and password.",
+                description: (error as Error).message,
                 action: <ToastAction altText="Try again">Try again</ToastAction>,
               })
         }
-        
-        console.log(form.email.value);
-        console.log(form.password.value);
+    
 
     }
 
@@ -61,18 +80,22 @@ export default function LoginForm() {
             <Section>
                 <Card className="m-4 mt-40" >
                     <CardHeader>
-                        <CardTitle>Login</CardTitle>
-                        <CardDescription>Enter your email and password to log in. <Link href="/signup" className="underline font-bold">Click here</Link> to create new account</CardDescription>
+                        <CardTitle>Sign Up</CardTitle>
+                        <CardDescription>Enter your email and password to create an account. </CardDescription>
                     </CardHeader>
                     <form onSubmit={handleSubmit}>
-                        <CardContent className="space-y-4">
+                        <CardContent className="space-y-2">
                             <div className="space-y-2">
                                 <Label htmlFor="email">Email</Label>
-                                <Input onChange={(e) => setEmail(e.target.value)} id="email" name="email" type="email" required value={email} />
+                                <Input id="email" name="email" type="email" required />
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="password">Password</Label>
-                                <Input onChange={(e) => setPassword(e.target.value)} id="password" name="password" type="password" value={password} required />
+                                <Input id="password" name="password" type="password" required />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="password">Confirm Password</Label>
+                                <Input id="password2" name="password2" type="password" required />
                             </div>
                         </CardContent>
                        

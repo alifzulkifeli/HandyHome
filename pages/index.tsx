@@ -1,11 +1,13 @@
 import Card from '@/components/card'
 import Category from '@/components/dd-category'
+import InstallButton from '@/components/InstallButton'
 import City from '@/components/location/dd-city'
 import Postcode from '@/components/location/dd-postcode'
 import State from '@/components/location/dd-state'
 import Page from '@/components/page'
 import Section from '@/components/section'
 import { pb } from '@/lib/pb'
+import { List } from 'lucide-react'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 
@@ -111,6 +113,7 @@ const Index = () => {
         <Page padding={3}>
             <Section>
                 <div className='flex w-full'>
+                    <InstallButton />
                     <State setNegeri={setNegeri} setCity={setCity} setPostcode={setPostcode} />
                     <City negeri={negeri} setCity={setCity} setPostcode={setPostcode} city={city} />
                     <Postcode city={city} setPostcode={setPostcode} negeri={negeri} />
@@ -124,7 +127,16 @@ const Index = () => {
                         </div>
                     ))
                 ) : (
-                    <p>No services found for the selected postcode.</p>
+                    <div className="flex flex-col items-center justify-center pt-40 px-4">
+                    <div className="text-primary w-24 h-24 mb-8">
+                        <List size={96} />
+                    </div>
+                    <h1 className="text-3xl font-bold text-foreground mb-4 text-center">No Items Found</h1>
+                    <p className="text-xl text-muted-foreground mb-8 text-center max-w-md">
+                         Start by selecting a location and category to find services.
+                    </p>
+                    
+                </div>
                 )}
             </Section>
         </Page>
