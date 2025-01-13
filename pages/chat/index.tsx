@@ -71,8 +71,7 @@ export default function Chat() {
         for (let i = 0; i < fetchedMessages.length; i++) {
           const message = fetchedMessages[i];
           let otherUser: string[] = [];
-          console.log(message.senderId);
-          console.log(message.recipientId);
+
 
           if (message.senderId === user.model.id && !messageList.find(m => m.name === message.recipientId)) {
             otherUser.push(message.recipientId);
@@ -113,6 +112,8 @@ export default function Chat() {
           setOtherUserData((prevData) => [...prevData, sp]);
         }
 
+
+
       }
       catch (error) {
         console.log('Error fetching user:', error)
@@ -120,7 +121,7 @@ export default function Chat() {
 
     }
     fetchMessages()
-    console.log(otherUserData);
+    
     
   }, [userId])
 
@@ -143,10 +144,12 @@ export default function Chat() {
                       }
                     </Avatar>
                     <div className="flex-1 min-w-0">
-                      {otherUserData[index] && 'name' in otherUserData[index] && otherUserData[index].avatar ? otherUserData[index].name : message.name}
+                      { otherUserData[index] && 'collectionId' in otherUserData[index] ? <h2 className="text-md font-semibold">{otherUserData[index].name}</h2> : <h2 className="text-md font-semibold">{message.name}</h2>}
                       <p className="text-sm text-muted-foreground truncate">{message.lastMessage}</p>
                     </div>
                   </CardContent>
+                  
+               
                 </Card>
               ))}
             </div>

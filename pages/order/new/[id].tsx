@@ -115,7 +115,7 @@ export default function ChatDetails() {
                 const reviewsData: any = await pb.collection('ReviewRatings').getList(1, 5, {
                     filter: `service_id='${serviceData.id}'`
                 });
-                const availbilityData: any = await pb.collection('Availabilities').getList(1, 5, {
+                const availbilityData: any = await pb.collection('Availabilities').getList(1, 50, {
                     filter: `provider_id='${serviceData.provider_id}' && date>='${today}' && date<'${sevenDaysFromNow}'`
                 });
 
@@ -255,7 +255,13 @@ export default function ChatDetails() {
                                         listTime.map((time: any, _index: any) => (
                                             <div className=' py-1 mx-1' key={_index}>
                                                 <div className='w-1/3' >
-                                                    <Button onClick={() => setSelectedTime(time)} className='border-2  bg-white border-blue-500 text-blue-500 font-semibold px-4 py-2 rounded transition duration-200 ease-in-out hover:bg-blue-500 hover:text-white active:bg-blue-700 active:border-blue-700' >{time < 10 ? `0${time}:00` : `${time}:00`}</Button>
+                                                    <Button onClick={() => setSelectedTime(time)} 
+                                                    className={`${selectedTime === time
+                                                        ? 'focus:bg-blue-500  bg-blue-500 text-white border-blue-700 active:bg-blue-700'
+                                                        : 'bg-white text-blue-500 border-blue-500 hover:bg-blue-500 hover:text-white active:bg-blue-700 active:border-blue-700'
+                                                        }`}
+
+                                                  >{time < 10 ? `0${time}:00` : `${time}:00`}</Button>
                                                 </div>
                                             </div>
                                         ))
